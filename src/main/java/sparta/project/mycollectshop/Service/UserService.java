@@ -22,11 +22,12 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void registerUser(SignupRequestDto requestDto) {
+    public User registerUser(SignupRequestDto requestDto) {
         // 회원 ID 중복 확인
         String username = requestDto.getUsername();
         Optional<User> found = userRepository.findByUsername(username);
         if (found.isPresent()) {
+            System.out.println("중복된 사용자 ID 가 존재합니다.");
             throw new IllegalArgumentException("중복된 사용자 ID 가 존재합니다.");
         }
 
@@ -36,6 +37,7 @@ public class UserService {
 
         // 사용자 ROLE 확인
         UserRoleEnum role = UserRoleEnum.USER;
+
         if (requestDto.isAdmin()) {
             if (!requestDto.getAdminToken().equals(ADMIN_TOKEN)) {
                 throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
@@ -46,6 +48,7 @@ public class UserService {
         User user = new User(username, password, email, role);
         userRepository.save(user);
 
+        return user;
     }
 
 
