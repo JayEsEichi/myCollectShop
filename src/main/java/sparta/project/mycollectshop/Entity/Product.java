@@ -56,6 +56,7 @@ public class Product {
     }
 
     public void addFolder(Folder folder) {
+
         this.folderList.add(folder);
     }
 }

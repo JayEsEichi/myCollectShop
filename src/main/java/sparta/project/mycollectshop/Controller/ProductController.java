@@ -8,11 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import sparta.project.mycollectshop.Dto.ProductMypriceRequestDto;
 import sparta.project.mycollectshop.Dto.ProductRequestDto;
 import sparta.project.mycollectshop.Entity.Product;
+import sparta.project.mycollectshop.Entity.User;
 import sparta.project.mycollectshop.Entity.UserRoleEnum;
 import sparta.project.mycollectshop.Security.UserDetailsImpl;
 import sparta.project.mycollectshop.Service.ProductService;
-
-import java.util.List;
 
 @RestController // JSON으로 데이터를 주고받음을 선언합니다.
 public class ProductController {
@@ -55,8 +54,10 @@ public class ProductController {
             @RequestParam("isAsc") boolean isAsc,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
+        // 로그인 되어 있는 회원 테이블의 ID
         Long userId = userDetails.getUser().getId();
         page = page - 1;
+
         return productService.getProducts(userId, page, size, sortBy, isAsc);
     }
 
@@ -69,7 +70,19 @@ public class ProductController {
             @RequestParam("sortBy") String sortBy,
             @RequestParam("isAsc") boolean isAsc
     ) {
-        page = page -1;
+        page = page - 1;
         return productService.getAllProducts(page, size, sortBy, isAsc);
+    }
+
+    // 상품에 폴더 추가
+    @PostMapping("/api/products/{productId}/folder")
+    public Long addFolder(
+            @PathVariable Long productId,
+            @RequestParam Long folderId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        User user = userDetails.getUser();
+        Product product = productService.addFolder(productId, folderId, user);
+        return product.getId();
     }
 }

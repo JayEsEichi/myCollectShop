@@ -76,6 +76,7 @@ public class ProductService {
 
     @Transactional
     public Product addFolder(Long productId, Long folderId, User user) {
+        System.out.println("첫번째");
         // 1) 관심상품을 조회합니다.
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NullPointerException("해당 상품 아이디가 존재하지 않습니다."));
